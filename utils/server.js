@@ -9,7 +9,7 @@ const FilenameRegex = /(\S+)\.fsub\.secureforest\.com/; // Filename
 const DataRegex = /(\S+)\.dsub\.secureforest\.com/; // Data Payload
 
 let fileName = "./encoded/untagged.txt";
-const logger = fs.createWriteStream(fileName, { flags: "a" });
+
 server.bind(UDP_PORT, UDP_IP);
 console.log('Server listening on UDP port ' + UDP_PORT)
 
