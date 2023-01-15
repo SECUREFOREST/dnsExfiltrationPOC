@@ -1,4 +1,4 @@
-## DNS exfiltration POC using NodeJS
+** DNS exfiltration POC using NodeJS **
 
 setup.sh - should be executed upon initialization
 convert.sh - digests the encoded files and places them in the "decoded" folder
