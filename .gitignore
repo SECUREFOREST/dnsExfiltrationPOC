@@ -130,5 +130,8 @@ dist
 .pnp.*
 
 # application-specific
-decoded\*
-encoded\*
+decoded
+encoded
+
+# OSX specific
+.DS_Store

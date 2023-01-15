@@ -2,13 +2,14 @@
   "name": "exfiltrationdnsserver",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "utils/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dns-packet": "^5.4.0"
+    "dns-packet": "^5.4.0",
+    "tar": "^6.1.13"
   }
 }
