@@ -4,5 +4,6 @@ setup.sh - should be executed upon initialization
 convert.sh - digests the encoded files and places them in the "decoded" folder
 utils/sender.sh - enables sending files using "filename" parameter
 
-For starting the server type:
+
+Starting the server:
 # node index.js
