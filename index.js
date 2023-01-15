@@ -7,8 +7,7 @@ const DataRegex = /(\S+)\.dsub\.secureforest\.com/;
 const UDP_IP = "0.0.0.0";
 const UDP_PORT = 53;
 
-let fileName = "untagged.txt";
-
+let fileName = "./encoded/untagged.txt";
 const logger = fs.createWriteStream(fileName, { flags: "a" });
 server.bind(UDP_PORT, UDP_IP);
 
@@ -33,9 +32,13 @@ function createReplyBuffer(id, name, reply) {
 }
 
 function decodeBase64(data) {
-  let buff = new Buffer.from(data, "base64");
-  let text = buff.toString("ascii");
-  return text;
+  try {
+    let buff = new Buffer.from(data, "base64");
+    let text = buff.toString("ascii");
+    return text;
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 server.on("message", (msg, rinfo) => {
@@ -47,13 +50,15 @@ server.on("message", (msg, rinfo) => {
     const matchFilename = FilenameRegex.exec(dnsName);
     if (matchFilename) {
       const decoded = decodeBase64(matchFilename[1] + "=");
-      fileName = decoded; // console.log("dns req data:", match[1]);
+      console.log("new file: " + decoded);
+      fileName = decoded;
+      fs.writeFileSync("./encoded/" + fileName, "");
       const buf = createReplyBuffer(dnsData.id, dnsName, "8.8.8.8");
       server.send(buf, rinfo.port, rinfo.address);
     }
     if (matchData) {
-      const decoded = decodeBase64(matchData[1] + "=");
-      fs.writeFileSync("./files/" + fileName, decoded + "\n"); // console.log("dns req data:", match[1]);
+      // console.log(matchData[1])
+      fs.appendFileSync("./encoded/" + fileName, matchData[1]); //
       const buf = createReplyBuffer(dnsData.id, dnsName, "8.8.8.8");
       server.send(buf, rinfo.port, rinfo.address);
     }
